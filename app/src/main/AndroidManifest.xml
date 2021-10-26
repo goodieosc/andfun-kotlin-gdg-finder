@@ -8,6 +8,7 @@
     <!-- see https://developer.android.com/training/location/retrieve-current.html -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
+<!--    Supports RTL below needs to be enabled for Right To Left Languages-->
     <application
             android:usesCleartextTraffic="true"
             android:allowBackup="true"

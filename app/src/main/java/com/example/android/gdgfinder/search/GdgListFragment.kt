@@ -11,9 +11,12 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.android.gdgfinder.R
 import com.example.android.gdgfinder.databinding.FragmentGdgListBinding
 import com.google.android.gms.location.*
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
+
 
 private const val LOCATION_PERMISSION_REQUEST = 1
 
@@ -56,6 +59,42 @@ class GdgListFragment : Fragment() {
                 }
             }
         })
+
+        viewModel.regionList.observe(viewLifecycleOwner, object: Observer<List<String>> {
+            override fun onChanged(data: List<String>?) {
+                data ?: return
+
+                //assign binding.regionList to a new variable called chipGroup,
+                // and create a new layoutInflator from chipGroup.context.
+                val chipGroup = binding.regionList
+                val inflator = LayoutInflater.from(chipGroup.context)
+
+                //Use the map function to iterate over regionsList and create a Chip for each item,
+                // then return the results as a new list called children.
+
+                //et each Chip’s text and tag to regionName. Also set an OnCheckedChangeListener so
+                // that we can use the tag to get the regionName for the selected Chip.
+                val children : List<Chip> = data.map { regionName ->
+                    val chip = inflator.inflate(R.layout.region, chipGroup, false) as Chip
+                    chip.text = regionName
+                    chip.tag = regionName
+                    chip.setOnCheckedChangeListener { button, isChecked ->
+                        viewModel.onFilterChanged(button.tag as String, isChecked)
+                    }
+                    chip
+                }
+                //Remove any views already in the ChipGroup
+                chipGroup.removeAllViews()
+
+                //Add the new children to the ChipGroup
+                for (chip: Chip in children){
+                    chipGroup.addView(chip)
+                }
+
+            }
+        })
+
+
 
         setHasOptionsMenu(true)
         return binding.root
